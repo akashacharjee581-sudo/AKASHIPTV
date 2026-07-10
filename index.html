@@ -1,247 +1,887 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>📺 AKASH IPTV | Premium Streaming</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#050a06">
+    <title>AKASH MODZ IPTV | Mobile</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#00ff66',
+                        dark: '#050a06',
+                        card: '#0c1a0f',
+                        accent: '#06b6d4'
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #0a0a0f; color: #fff; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+        :root { --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom); }
+        html, body { font-family: 'Poppins', sans-serif; background-color: #050a06; color: #e5e7eb; overflow-x: hidden; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+        .glass { background: rgba(12, 26, 15, 0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .hero-gradient { background: linear-gradient(to top, #050a06, transparent); }
 
-        #topbar {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 65px;
-            background: linear-gradient(135deg, #0d0d1a 0%, #1a0a2e 50%, #0d0d1a 100%);
-            border-bottom: 2px solid transparent;
-            border-image: linear-gradient(90deg, #7c3aed, #3b82f6, #06b6d4, #7c3aed) 1;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
-            z-index: 9999;
-            gap: 12px;
-        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #050a06; }
+        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 10px; }
 
-        #logo { display: flex; align-items: center; gap: 8px; min-width: fit-content; }
-        #logo .tv-icon { font-size: 1.5rem; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
-        #logo h1 {
-            font-size: 1.25rem; font-weight: 900;
-            background: linear-gradient(90deg, #a855f7, #3b82f6, #06b6d4);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            letter-spacing: 1px; white-space: nowrap;
-        }
-        #logo span.badge {
-            background: linear-gradient(90deg, #7c3aed, #3b82f6);
-            color: #fff; font-size: 0.55rem; padding: 2px 6px;
-            border-radius: 999px; font-weight: bold; letter-spacing: 1px;
-        }
+        .video-js { width: 100% !important; height: auto !important; aspect-ratio: 16/9; border-radius: 14px; overflow: hidden; }
+        .vjs-theme-akash { --vjs-theme-primary: #00ff66; }
 
-        #nav-cats { display: flex; gap: 6px; align-items: center; }
-        .cat-btn {
-            background: rgba(255,255,255,0.07);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #ccc; padding: 5px 12px; border-radius: 999px;
-            font-size: 0.78rem; cursor: pointer; white-space: nowrap;
-            transition: all 0.2s; display: flex; align-items: center; gap: 4px;
-        }
-        .cat-btn:hover, .cat-btn.active {
-            background: linear-gradient(135deg, #7c3aed, #3b82f6);
-            border-color: transparent; color: #fff;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(124,58,237,0.4);
-        }
+        .focusable:focus { outline: 3px solid #00ff66; transform: scale(1.03); z-index: 50; transition: all 0.2s ease; }
+        .channel-card { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        .channel-card:active { transform: scale(0.95); }
+        .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        .glow-text { text-shadow: 0 0 10px rgba(0,255,102,0.6), 0 0 30px rgba(0,255,102,0.25); }
 
-        #search-wrap {
-            display: flex; align-items: center;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 999px; padding: 5px 14px; gap: 6px;
-            min-width: 160px; max-width: 220px; transition: all 0.2s;
+        /* ===== AKASH MODZ Brand Mark ===== */
+        .brand-mark {
+            font-weight: 900;
+            letter-spacing: 0.04em;
+            background: linear-gradient(90deg, #00ff66, #5dffb0, #06b6d4, #00ff66);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: brandshine 5s linear infinite;
+            filter: drop-shadow(0 0 14px rgba(0,255,102,0.45));
         }
-        #search-wrap:focus-within {
-            border-color: #7c3aed;
-            background: rgba(124,58,237,0.1);
-            box-shadow: 0 0 0 2px rgba(124,58,237,0.2);
-        }
-        #search-wrap input { background:none; border:none; outline:none; color:#fff; font-size:0.82rem; width:100%; }
-        #search-wrap input::placeholder { color:#888; }
+        @keyframes brandshine { to { background-position: 300% center; } }
 
-        #tg-link {
-            background: linear-gradient(135deg, #7c3aed, #3b82f6);
-            color: #fff; text-decoration: none; padding: 7px 14px;
-            border-radius: 999px; font-weight: bold; font-size: 0.8rem;
-            white-space: nowrap; display: flex; align-items: center; gap: 5px;
-            box-shadow: 0 4px 15px rgba(124,58,237,0.4); transition: all 0.2s;
-        }
-        #tg-link:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.6); }
+        #brand-bar { background: linear-gradient(90deg, #00ff66, #06b6d4, #00ff66); background-size: 200% auto; animation: shine 4s linear infinite; }
+        @keyframes shine { to { background-position: 200% center; } }
 
-        .live-dot {
-            width: 7px; height: 7px; background: #ef4444;
-            border-radius: 50%; display: inline-block; animation: blink 1s infinite;
-        }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+        .splash-logo { animation: pulseLogo 1.8s ease-in-out infinite; }
+        @keyframes pulseLogo { 0%,100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(0,255,102,0.5)); } 50% { transform: scale(1.06); filter: drop-shadow(0 0 26px rgba(0,255,102,0.85)); } }
 
-        /* ===== IFRAME ===== */
-        #content-frame {
-            position: fixed;
-            top: 65px; left: 0; right: 0; bottom: 0;
-            width: 100%; height: calc(100vh - 65px);
-            border: none;
+        .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 37%, rgba(255,255,255,0.04) 63%); background-size: 400% 100%; animation: skeletonShine 1.4s ease infinite; }
+        @keyframes skeletonShine { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+        .toast { animation: toastIn 0.25s ease-out, toastOut 0.3s ease-in 2.2s forwards; }
+        @keyframes toastIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes toastOut { to { opacity: 0; transform: translateY(20px); } }
+
+        .live-dot { animation: livePulse 1.4s ease-in-out infinite; }
+        @keyframes livePulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+        .mini-player { position: fixed; bottom: calc(64px + var(--sab) + 10px); right: 10px; width: 150px; z-index: 70; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1px solid rgba(0,255,102,0.3); }
+
+        .safe-top { padding-top: var(--sat); }
+        .safe-bottom { padding-bottom: var(--sab); }
+
+        #pull-refresh { transition: height 0.2s ease; }
+
+        .nav-active { color: #00ff66 !important; }
+        .nav-active i { filter: drop-shadow(0 0 8px rgba(0,255,102,0.7)); }
+
+        @media (max-width: 767px) {
+            .video-js { border-radius: 0; }
         }
 
-        /* ===== তার পুরো হেডার ঢেকে দেওয়ার COVER ===== */
-        #header-cover {
-            position: fixed;
-            top: 65px;
-            left: 0; right: 0;
-            height: 80px; /* তার হেডারের সাইজ মতো */
-            z-index: 9998;
-            background: linear-gradient(135deg, #0d0d1a, #1a0a2e, #0d0d1a);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            border-bottom: 1px solid rgba(124,58,237,0.3);
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        /* রেইনবো অ্যানিমেশন লাইন */
-        #header-cover::before {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #7c3aed, #3b82f6, #06b6d4, #10b981, #f59e0b, #ef4444, #7c3aed);
-            background-size: 200%;
-            animation: rainbow 3s linear infinite;
-        }
-        @keyframes rainbow { 0%{background-position:0%} 100%{background-position:200%} }
-
-        /* স্ক্রোলিং টেক্সট */
-        .ticker-wrap {
-            width: 100%;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        .ticker-text {
-            display: inline-block;
-            animation: ticker 20s linear infinite;
-            font-size: 0.85rem;
-            color: rgba(255,255,255,0.5);
-            letter-spacing: 2px;
-        }
-        @keyframes ticker {
-            0% { transform: translateX(100vw); }
-            100% { transform: translateX(-100%); }
-        }
-
-        /* স্ট্যাটাস বার */
-        .cover-info {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-            position: absolute;
-        }
-        .cover-chip {
-            background: rgba(124,58,237,0.2);
-            border: 1px solid rgba(124,58,237,0.4);
-            color: #a78bfa;
-            padding: 4px 12px;
-            border-radius: 999px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* ===== FLOATING TG ===== */
-        #tg-float {
-            position: fixed; bottom: 20px; right: 20px;
-            background: linear-gradient(135deg, #7c3aed, #3b82f6);
-            color: #fff; width: 52px; height: 52px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.3rem; text-decoration: none;
-            box-shadow: 0 4px 20px rgba(124,58,237,0.6);
-            z-index: 99999; transition: all 0.2s;
-        }
-        #tg-float:hover { transform: scale(1.1); }
-
-        @media (max-width: 640px) {
-            #topbar { height: 110px; flex-wrap: wrap; padding: 8px 12px; }
-            #content-frame { top: 110px; height: calc(100vh - 110px); }
-            #header-cover { top: 110px; }
-            #nav-cats { order: 3; width: 100%; overflow-x: auto; }
-            #nav-cats::-webkit-scrollbar { display: none; }
-            #search-wrap { display: none; }
+        @media (prefers-reduced-motion: reduce) {
+            .splash-logo, .brand-mark, #brand-bar, .live-dot { animation: none !important; }
         }
     </style>
 </head>
-<body>
+<body class="selection:bg-primary selection:text-black">
 
-    <!-- আমার টপবার -->
-    <div id="topbar">
-        <div id="logo">
-            <span class="tv-icon">📺</span>
-            <h1>AKASH IPTV</h1>
-            <span class="badge">PREMIUM</span>
-        </div>
-        <div id="nav-cats">
-            <span class="cat-btn active" onclick="filterCat(this,'')">🏠 Home</span>
-            <span class="cat-btn" onclick="filterCat(this,'#live')"><span class="live-dot"></span> Live TV</span>
-            <span class="cat-btn" onclick="filterCat(this,'#sports')">⚽ Sports</span>
-            <span class="cat-btn" onclick="filterCat(this,'#movies')">🎬 Movies</span>
-            <span class="cat-btn" onclick="filterCat(this,'#kids')">🧒 Kids</span>
-            <span class="cat-btn" onclick="filterCat(this,'#news')">📰 News</span>
-        </div>
-        <div id="search-wrap">
-            <span>🔍</span>
-            <input type="text" id="searchInput" placeholder="Search channels..." onkeydown="doSearch(event)">
-        </div>
-        <a href="https://t.me/ANcommunity2" target="_blank" id="tg-link">📢 Telegram</a>
+    <!-- Branding Bar -->
+    <div id="brand-bar" class="fixed top-0 left-0 w-full h-1 z-[60]"></div>
+
+    <!-- Offline Banner -->
+    <div id="offline-banner" class="hidden fixed top-1 left-0 w-full z-[65] bg-red-600 text-white text-xs font-semibold text-center py-1.5 safe-top">
+        <i class="fas fa-wifi mr-1"></i> No Internet Connection — Reconnecting...
     </div>
 
-    <!-- তার হেডার ঢেকে দেওয়ার কভার 😂 -->
-    <div id="header-cover">
-        <div class="cover-info">
-            <div class="cover-chip">🔴 <span class="live-dot"></span> LIVE NOW</div>
-            <div class="cover-chip">📡 HD STREAMING</div>
-            <div class="cover-chip">⚡ POWERED BY AKASH</div>
-            <div class="cover-chip">🌐 ALL CHANNELS</div>
+    <!-- App Loader / Splash -->
+    <div id="loader" class="fixed inset-0 z-[100] bg-dark flex flex-col items-center justify-center px-6">
+        <div class="splash-logo w-20 h-20 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/50 mb-5">
+            <i class="fas fa-play text-black text-3xl"></i>
         </div>
-        <div class="ticker-wrap" style="position:absolute; bottom: 8px;">
-            <span class="ticker-text">
-                🎬 Welcome to AKASH IPTV &nbsp;&nbsp;&nbsp; 📺 Live TV • Sports • Movies • Kids &nbsp;&nbsp;&nbsp; 📢 Join: t.me/ANcommunity2 &nbsp;&nbsp;&nbsp; ⚡ HD Quality Streaming &nbsp;&nbsp;&nbsp; 🌟 Premium Channels Available &nbsp;&nbsp;&nbsp;
-            </span>
+        <h2 class="text-3xl font-black tracking-wide brand-mark text-center">AKASH MODZ</h2>
+        <p class="text-sm text-gray-400 mt-1 tracking-widest">I P T V</p>
+        <div class="w-48 h-1.5 bg-white/10 rounded-full mt-6 overflow-hidden">
+            <div id="loader-progress" class="h-full bg-primary rounded-full transition-all duration-300" style="width:0%"></div>
+        </div>
+        <p id="loader-status" class="text-xs text-gray-500 mt-3">Loading channels...</p>
+        <p class="text-[10px] text-gray-600 mt-8">100% Ad-Free Streaming</p>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center gap-2 pointer-events-none"></div>
+
+    <!-- Sidebar (Desktop only) -->
+    <aside class="fixed left-0 top-0 h-full w-20 hover:w-64 bg-card border-r border-primary/10 transition-all duration-300 z-50 overflow-hidden hidden md:flex flex-col items-start group">
+        <div class="p-5 mb-8 flex items-center gap-3">
+            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center shadow-lg shadow-primary/50 shrink-0">
+                <i class="fas fa-play text-black"></i>
+            </div>
+            <span class="opacity-0 group-hover:opacity-100 whitespace-nowrap font-black text-sm brand-mark">AKASH MODZ</span>
+        </div>
+        <nav class="flex-1 w-full px-4 space-y-4" id="main-nav"></nav>
+        <div class="p-4 w-full border-t border-primary/10">
+            <a href="https://t.me/ANcommunity2" target="_blank" class="flex items-center gap-4 text-cyan-400 hover:text-primary">
+                <i class="fab fa-telegram text-2xl shrink-0"></i>
+                <span class="opacity-0 group-hover:opacity-100 whitespace-nowrap text-sm">Join Telegram</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Mobile Top Brand Header -->
+    <div class="md:hidden sticky top-0 z-40 glass safe-top px-4 pt-3 pb-2 flex items-center justify-between border-b border-primary/10">
+        <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/40 shrink-0">
+                <i class="fas fa-play text-black text-sm"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-black leading-none brand-mark tracking-wide">AKASH MODZ</h1>
+                <p class="text-[9px] text-gray-500 tracking-[0.2em] leading-none mt-0.5">LIVE IPTV</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <button id="share-app-btn" class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-gray-300 focusable" tabindex="0" title="Share App">
+                <i class="fas fa-share-alt text-sm"></i>
+            </button>
+            <div id="net-indicator" class="w-2.5 h-2.5 rounded-full bg-primary live-dot shadow-[0_0_8px_rgba(0,255,102,0.8)]"></div>
         </div>
     </div>
 
-    <!-- Iframe -->
-    <iframe
-        id="content-frame"
-        src="https://vimiptv.netlify.app"
-        allowfullscreen
-        allow="autoplay; fullscreen; encrypted-media"
-        scrolling="yes">
-    </iframe>
+    <!-- Main Content -->
+    <main class="md:ml-20 min-h-screen pb-24" id="main-scroll">
 
-    <a href="https://t.me/ANcommunity2" target="_blank" id="tg-float">📢</a>
+        <!-- Pull to refresh indicator -->
+        <div id="pull-refresh" class="hidden md:hidden h-0 flex items-center justify-center overflow-hidden text-primary text-xs gap-2">
+            <i class="fas fa-sync-alt" id="pull-icon"></i> <span id="pull-text">Pull to refresh</span>
+        </div>
+
+        <!-- Header (Desktop) -->
+        <header class="hidden md:flex sticky top-0 z-40 glass px-6 py-4 items-center justify-between border-b border-primary/10">
+            <div class="flex items-center gap-4 flex-1">
+                <div class="relative w-full max-w-md group focusable" tabindex="0">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="global-search" placeholder="Search Channels..."
+                           class="w-full bg-white/5 border border-white/10 rounded-full py-2 pl-12 pr-4 focus:outline-none focus:border-primary transition-all">
+                </div>
+            </div>
+            <div class="flex items-center gap-6 ml-4">
+                <div id="clock" class="hidden sm:block font-mono text-primary font-bold">00:00:00</div>
+                <div class="text-xs text-gray-400 hidden lg:block">
+                    <span id="channel-count" class="text-primary font-bold">0</span> Channels Live
+                </div>
+            </div>
+        </header>
+
+        <!-- Mobile Search Bar (below brand header) -->
+        <div class="md:hidden px-4 py-3 flex items-center gap-3">
+            <div class="relative flex-1 focusable" tabindex="0">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                <input type="text" id="global-search-mobile" placeholder="Search channels..."
+                       class="w-full bg-white/5 border border-white/10 rounded-full py-2.5 pl-11 pr-4 text-sm focus:outline-none focus:border-primary transition-all">
+            </div>
+            <div class="flex items-center gap-1.5 text-[11px] text-gray-400 bg-white/5 px-2.5 py-2 rounded-full shrink-0">
+                <span class="w-1.5 h-1.5 rounded-full bg-primary live-dot"></span>
+                <span id="channel-count-mobile" class="text-primary font-bold">0</span> Live
+            </div>
+        </div>
+
+        <!-- Player Section -->
+        <section id="player-container" class="hidden px-0 md:px-10 py-0 md:py-6 max-w-6xl mx-auto">
+            <div class="relative group" id="player-wrap">
+                <video id="akash-player" class="video-js vjs-big-play-centered vjs-theme-akash"></video>
+                <div id="player-overlay" class="absolute top-3 right-3 flex gap-2 z-10">
+                    <button id="pip-btn" onclick="togglePiP()" class="bg-black/50 hover:bg-primary hover:text-black w-9 h-9 rounded-full flex items-center justify-center transition-colors" title="Picture in Picture">
+                        <i class="fas fa-clone text-sm"></i>
+                    </button>
+                    <button onclick="minimizePlayer()" class="md:hidden bg-black/50 hover:bg-white/20 w-9 h-9 rounded-full flex items-center justify-center transition-colors" title="Minimize">
+                        <i class="fas fa-compress-alt text-sm"></i>
+                    </button>
+                    <button onclick="closePlayer()" class="bg-black/50 hover:bg-red-500 w-9 h-9 rounded-full flex items-center justify-center transition-colors">
+                        <i class="fas fa-times text-sm"></i>
+                    </button>
+                </div>
+                <div id="buffer-msg" class="hidden absolute inset-0 bg-black/70 flex flex-col items-center justify-center gap-2 text-sm text-gray-300 z-10">
+                    <i class="fas fa-circle-notch fa-spin text-primary text-2xl"></i>
+                    <span>Reconnecting stream...</span>
+                </div>
+            </div>
+            <div class="mt-3 px-4 md:px-0 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0">
+                    <img id="now-playing-logo" src="" class="w-11 h-11 object-contain bg-white/5 rounded-lg p-1 shrink-0">
+                    <div class="min-w-0">
+                        <h2 id="now-playing-title" class="text-base md:text-xl font-bold text-white truncate">Channel Name</h2>
+                        <p id="now-playing-cat" class="text-xs text-gray-400 flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-red-500 live-dot"></span> Category
+                        </p>
+                    </div>
+                </div>
+                <div class="flex gap-2 shrink-0">
+                    <button onclick="prevChannel()" class="p-2.5 bg-white/5 rounded-lg hover:bg-white/10 active:scale-90 transition" title="Previous"><i class="fas fa-backward-step"></i></button>
+                    <button onclick="nextChannel()" class="p-2.5 bg-white/5 rounded-lg hover:bg-white/10 active:scale-90 transition" title="Next"><i class="fas fa-forward-step"></i></button>
+                    <button onclick="toggleCinema()" class="p-2.5 bg-white/5 rounded-lg hover:bg-white/10 active:scale-90 transition" title="Cinema Mode"><i class="fas fa-expand"></i></button>
+                    <button id="fav-btn-player" class="p-2.5 bg-white/5 rounded-lg hover:bg-white/10 active:scale-90 transition" title="Favorite"><i class="far fa-heart"></i></button>
+                    <button onclick="shareChannel()" class="p-2.5 bg-white/5 rounded-lg hover:bg-white/10 active:scale-90 transition" title="Share"><i class="fas fa-share-alt"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mini floating player (mobile, shown when minimized) -->
+        <div id="mini-player" class="mini-player hidden">
+            <div class="relative bg-black aspect-video flex items-center justify-center">
+                <img id="mini-player-logo" src="" class="w-10 h-10 object-contain opacity-80">
+                <button onclick="restorePlayer()" class="absolute inset-0" aria-label="Restore player"></button>
+                <button onclick="event.stopPropagation(); closePlayer()" class="absolute top-1 right-1 w-6 h-6 bg-black/60 rounded-full flex items-center justify-center text-xs">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Hero Slider -->
+        <section id="hero" class="relative h-[34vh] md:h-[50vh] overflow-hidden mb-6 md:mb-10 mx-3 md:mx-4 rounded-2xl md:rounded-3xl group border border-primary/10">
+            <div id="hero-img" class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"></div>
+            <div class="absolute inset-0 hero-gradient"></div>
+            <div class="absolute top-3 left-3 flex items-center gap-1.5">
+                <span class="bg-primary text-black px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-black live-dot"></span> LIVE
+                </span>
+            </div>
+            <div class="absolute bottom-5 left-5 right-5 md:bottom-10 md:left-10 md:right-auto max-w-2xl">
+                <h1 class="text-2xl md:text-5xl font-black text-white mb-1 brand-mark tracking-wide">AKASH MODZ</h1>
+                <p id="hero-desc" class="text-gray-300 text-xs md:text-base mb-3 md:mb-6 line-clamp-2">100% Ad-Free Live TV — Bangla & India Channels.</p>
+                <button onclick="scrollToContent()" class="bg-primary text-black px-5 md:px-8 py-2.5 md:py-3 rounded-xl font-bold text-sm md:text-base hover:bg-green-400 active:scale-95 transition-all focusable" tabindex="0">
+                    <i class="fas fa-play mr-2"></i> Watch Now
+                </button>
+            </div>
+        </section>
+
+        <!-- Content Rows -->
+        <div class="px-3 md:px-6 space-y-8 md:space-y-10" id="content-rows">
+
+            <div id="row-recent" class="hidden">
+                <h3 class="text-base md:text-xl font-bold mb-3 md:mb-4 flex items-center gap-2 text-primary">
+                    <i class="fas fa-history"></i> Recently Watched
+                </h3>
+                <div class="flex gap-3 overflow-x-auto pb-2 -mx-3 px-3 md:grid md:grid-cols-6 md:gap-4 md:overflow-visible md:mx-0 md:px-0 scroll-smooth" id="recent-grid"></div>
+            </div>
+
+            <div id="row-trending">
+                <h3 class="text-base md:text-xl font-bold mb-3 md:mb-4 flex items-center gap-2 text-primary">
+                    <i class="fas fa-fire"></i> Trending Now
+                </h3>
+                <div class="flex gap-3 overflow-x-auto pb-2 -mx-3 px-3 md:grid md:grid-cols-6 md:gap-4 md:overflow-visible md:mx-0 md:px-0 scroll-smooth" id="trending-grid"></div>
+            </div>
+
+            <div id="row-featured">
+                <h3 class="text-base md:text-xl font-bold mb-3 md:mb-4 flex items-center gap-2 text-primary">
+                    <i class="fas fa-star"></i> Featured Channels
+                </h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4" id="featured-grid"></div>
+            </div>
+
+            <div>
+                <div class="flex items-center justify-between mb-4 md:mb-6 gap-2">
+                    <h3 class="text-base md:text-xl font-bold flex items-center gap-2 text-primary truncate" id="current-view-title">
+                        <i class="fas fa-tv"></i> All Channels
+                    </h3>
+                    <select id="country-filter" class="bg-card border border-white/10 rounded-lg px-2.5 py-1.5 text-xs md:text-sm focusable shrink-0" tabindex="0">
+                        <option value="all">All Countries</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-6" id="main-grid"></div>
+            </div>
+        </div>
+
+        <footer class="text-center text-xs text-gray-500 mt-10 pb-4 px-4">
+            Made with ❤️ by <span class="brand-mark font-black">AKASH MODZ</span><br class="md:hidden">
+            <span class="md:inline"> · No Ads · No Tracking</span>
+        </footer>
+    </main>
+
+    <!-- Mobile Navigation -->
+    <nav class="md:hidden fixed bottom-0 w-full glass border-t border-primary/10 px-2 pt-2 flex justify-around items-center z-50 safe-bottom" id="mobile-nav">
+        <button onclick="changePage('Home')" data-page="Home" class="nav-btn flex flex-col items-center gap-1 text-gray-400 focusable py-1 px-2" tabindex="0">
+            <i class="fas fa-home text-lg"></i><span class="text-[10px] font-medium">Home</span>
+        </button>
+        <button onclick="changePage('Live TV')" data-page="Live TV" class="nav-btn flex flex-col items-center gap-1 text-gray-400 focusable py-1 px-2" tabindex="0">
+            <i class="fas fa-tv text-lg"></i><span class="text-[10px] font-medium">Live TV</span>
+        </button>
+        <button onclick="changePage('Sports')" data-page="Sports" class="nav-btn flex flex-col items-center gap-1 text-gray-400 focusable py-1 px-2" tabindex="0">
+            <i class="fas fa-futbol text-lg"></i><span class="text-[10px] font-medium">Sports</span>
+        </button>
+        <button onclick="changePage('Movies')" data-page="Movies" class="nav-btn flex flex-col items-center gap-1 text-gray-400 focusable py-1 px-2" tabindex="0">
+            <i class="fas fa-film text-lg"></i><span class="text-[10px] font-medium">Movies</span>
+        </button>
+        <button onclick="changePage('Favorites')" data-page="Favorites" class="nav-btn flex flex-col items-center gap-1 text-gray-400 focusable py-1 px-2" tabindex="0">
+            <i class="fas fa-heart text-lg"></i><span class="text-[10px] font-medium">Favs</span>
+        </button>
+    </nav>
+
+    <!-- Scripts (Player only, NO ad scripts) -->
+    <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/videojs-contrib-quality-levels@4.0.0/dist/videojs-contrib-quality-levels.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/videojs-hls-quality-selector@2.0.0/dist/videojs-hls-quality-selector.min.js"></script>
 
     <script>
-        function filterCat(el, hash) {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
-            document.getElementById('content-frame').src = 'https://vimiptv.netlify.app' + (hash || '');
-        }
-        function doSearch(e) {
-            if (e.key === 'Enter') {
-                const q = document.getElementById('searchInput').value.trim();
-                if (q) document.getElementById('content-frame').src = 'https://vimiptv.netlify.app/?search=' + encodeURIComponent(q);
+        /**
+         * AKASH MODZ IPTV - APPLICATION CORE (Ad-Free Build, Mobile Edition)
+         */
+        const SOURCES = {
+            json: 'https://raw.githubusercontent.com/SHAJON-404/iptv/main/channels.json',
+            m3u: 'https://raw.githubusercontent.com/vimtips02/VimiPTVs/refs/heads/main/Vimiptv%20playlist'
+        };
+
+        const CACHE_KEY = 'akash_channel_cache';
+        const CACHE_TTL = 1000 * 60 * 30; // 30 minutes
+
+        const state = {
+            channels: [],
+            favorites: JSON.parse(localStorage.getItem('akash_favs')) || [],
+            recent: JSON.parse(localStorage.getItem('akash_recent')) || [],
+            views: JSON.parse(localStorage.getItem('akash_views')) || {},
+            currentPage: 'Home',
+            currentCountry: 'all',
+            searchQuery: '',
+            player: null,
+            currentIndex: -1,
+            isMinimized: false
+        };
+
+        const MENU_ITEMS = [
+            { name: 'Home', icon: 'fa-home' },
+            { name: 'Live TV', icon: 'fa-tv' },
+            { name: 'Sports', icon: 'fa-futbol' },
+            { name: 'Movies', icon: 'fa-film' },
+            { name: 'Kids', icon: 'fa-child' },
+            { name: 'Favorites', icon: 'fa-heart' }
+        ];
+
+        async function init() {
+            renderNav();
+            setupClock();
+            initPlayer();
+            setupKeyboard();
+            setupSearchSync();
+            setupOfflineDetection();
+            setupPullToRefresh();
+            setupShare();
+            setActiveNav('Home');
+
+            setLoaderStatus('Checking cache...', 10);
+            const cached = loadFromCache();
+
+            try {
+                if (cached) {
+                    state.channels = cached;
+                    setLoaderStatus('Loaded from cache', 70);
+                    finishBoot();
+                    // refresh quietly in background
+                    fetchAndMergeData(true).then(() => { renderAll(); populateCountries(); });
+                } else {
+                    setLoaderStatus('Fetching live channels...', 30);
+                    await fetchAndMergeData();
+                    setLoaderStatus('Building your channel guide...', 80);
+                    finishBoot();
+                }
+            } catch (err) {
+                console.error("Initialization failed", err);
+                setLoaderStatus('Failed to load. Retrying...', 50);
+                showToast('Could not load channels. Check your connection.', 'error');
             }
         }
+
+        function finishBoot() {
+            updateHero();
+            updateTrending();
+            renderAll();
+            populateCountries();
+            setLoaderStatus('Ready!', 100);
+            setTimeout(() => document.getElementById('loader').classList.add('hidden'), 350);
+        }
+
+        function setLoaderStatus(text, pct) {
+            const statusEl = document.getElementById('loader-status');
+            const progEl = document.getElementById('loader-progress');
+            if (statusEl) statusEl.textContent = text;
+            if (progEl) progEl.style.width = pct + '%';
+        }
+
+        function loadFromCache() {
+            try {
+                const raw = localStorage.getItem(CACHE_KEY);
+                if (!raw) return null;
+                const parsed = JSON.parse(raw);
+                if (Date.now() - parsed.ts > CACHE_TTL) return null;
+                return parsed.data;
+            } catch { return null; }
+        }
+
+        function saveToCache(data) {
+            try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch {}
+        }
+
+        async function fetchAndMergeData(silent) {
+            const [resJson, resM3u] = await Promise.all([
+                fetch(SOURCES.json).then(r => r.json()).catch(() => []),
+                fetch(SOURCES.m3u).then(r => r.text()).catch(() => "")
+            ]);
+
+            const data1 = (Array.isArray(resJson) ? resJson : []).map((ch, i) => ({
+                id: `src1_${i}`,
+                name: ch.name,
+                logo: ch.logo || ch.tvgLogo,
+                url: ch.url || ch.link,
+                category: ch.category || ch.group || 'General',
+                country: ch.country || 'Global'
+            }));
+
+            const data2 = [];
+            const lines = resM3u.split('\n');
+            let currentCh = {};
+
+            lines.forEach(line => {
+                if (line.startsWith('#EXTINF:')) {
+                    const nameMatch = line.match(/,(.*)$/);
+                    const groupMatch = line.match(/group-title="(.*?)"/);
+                    const logoMatch = line.match(/tvg-logo="(.*?)"/);
+                    const countryMatch = line.match(/tvg-country="(.*?)"/);
+
+                    currentCh.name = nameMatch ? nameMatch[1].trim() : 'Unknown';
+                    currentCh.category = groupMatch ? groupMatch[1] : 'General';
+                    currentCh.logo = logoMatch ? logoMatch[1] : '';
+                    currentCh.country = countryMatch ? countryMatch[1] : 'Global';
+                } else if (line.startsWith('http')) {
+                    currentCh.url = line.trim();
+                    currentCh.id = `src2_${data2.length}`;
+                    if (currentCh.url) data2.push({...currentCh});
+                    currentCh = {};
+                }
+            });
+
+            state.channels = [...data1, ...data2].filter(c => c.url);
+            saveToCache(state.channels);
+            document.getElementById('channel-count').textContent = state.channels.length;
+            document.getElementById('channel-count-mobile').textContent = state.channels.length;
+            if (!silent) return state.channels;
+        }
+
+        function renderNav() {
+            const nav = document.getElementById('main-nav');
+            nav.innerHTML = MENU_ITEMS.map(item => `
+                <button onclick="changePage('${item.name}')" data-page="${item.name}"
+                        class="desk-nav-btn w-full flex items-center gap-6 py-3 text-gray-400 hover:text-primary transition-all group/btn focusable" tabindex="0">
+                    <i class="fas ${item.icon} text-xl w-6"></i>
+                    <span class="opacity-0 group-hover:opacity-100 whitespace-nowrap font-medium">${item.name}</span>
+                </button>
+            `).join('');
+        }
+
+        function setActiveNav(page) {
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.toggle('nav-active', btn.dataset.page === page);
+            });
+            document.querySelectorAll('.desk-nav-btn').forEach(btn => {
+                btn.classList.toggle('text-primary', btn.dataset.page === page);
+            });
+        }
+
+        function renderAll() {
+            renderGrid('featured-grid', state.channels.slice(0, 12), true);
+            renderGrid('main-grid', getFilteredChannels());
+
+            if (state.recent.length > 0) {
+                document.getElementById('row-recent').classList.remove('hidden');
+                renderGrid('recent-grid', state.recent, true);
+            } else {
+                document.getElementById('row-recent').classList.add('hidden');
+            }
+        }
+
+        function updateTrending() {
+            const sorted = [...state.channels].sort((a, b) => (state.views[b.url] || 0) - (state.views[a.url] || 0));
+            const top = sorted.filter(c => (state.views[c.url] || 0) > 0).slice(0, 10);
+            const fallback = top.length > 0 ? top : shuffle([...state.channels]).slice(0, 10);
+            renderGrid('trending-grid', fallback, true, true);
+        }
+
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function renderGrid(containerId, list, horizontal, showViews) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = list.map(ch => {
+                const isFav = state.favorites.some(f => f.url === ch.url);
+                const viewCount = state.views[ch.url] || Math.floor(Math.random() * 900 + 50);
+                const widthClass = horizontal ? 'w-[140px] md:w-auto shrink-0' : '';
+                return `
+                <div class="channel-card group bg-card border border-primary/10 rounded-xl overflow-hidden cursor-pointer focusable ${widthClass}" tabindex="0" onclick="playChannel('${btoa(ch.url)}')">
+                    <div class="aspect-video relative overflow-hidden bg-black/40">
+                        <img src="${ch.logo}" alt="" loading="lazy" class="w-full h-full object-contain p-3 md:p-4 group-hover:scale-110 transition-transform"
+                             onerror="this.src='https://via.placeholder.com/150x150/0c1a0f/00ff66?text=AKASH+MODZ'">
+                        <div class="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <i class="fas fa-play text-primary text-2xl md:text-3xl"></i>
+                        </div>
+                        ${showViews ? `<span class="absolute bottom-1.5 left-1.5 bg-black/60 text-[9px] text-gray-200 px-1.5 py-0.5 rounded flex items-center gap-1"><i class="fas fa-eye text-primary"></i> ${viewCount}</span>` : ''}
+                        <button onclick="event.stopPropagation(); toggleFav('${btoa(ch.url)}')" class="absolute top-1.5 right-1.5 w-7 h-7 md:w-8 md:h-8 rounded-full bg-black/50 flex items-center justify-center hover:text-red-500 active:scale-90 transition">
+                            <i class="${isFav ? 'fas' : 'far'} fa-heart text-xs md:text-sm"></i>
+                        </button>
+                    </div>
+                    <div class="p-2.5 md:p-3">
+                        <h4 class="text-xs md:text-sm font-semibold line-clamp-1 group-hover:text-primary transition-colors">${ch.name}</h4>
+                        <p class="text-[9px] md:text-[10px] text-gray-500 mt-0.5 md:mt-1 uppercase tracking-wider">${ch.category}</p>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function renderSkeletons(containerId, count) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = Array.from({ length: count }).map(() => `
+                <div class="bg-card border border-primary/10 rounded-xl overflow-hidden">
+                    <div class="aspect-video skeleton"></div>
+                    <div class="p-3 space-y-2">
+                        <div class="h-3 w-3/4 rounded skeleton"></div>
+                        <div class="h-2 w-1/2 rounded skeleton"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getFilteredChannels() {
+            return state.channels.filter(ch => {
+                const matchesSearch = ch.name.toLowerCase().includes(state.searchQuery.toLowerCase());
+                const matchesCountry = state.currentCountry === 'all' || ch.country === state.currentCountry;
+
+                if (state.currentPage === 'Home') return matchesSearch && matchesCountry;
+                if (state.currentPage === 'Favorites') return state.favorites.some(f => f.url === ch.url) && matchesSearch;
+                if (state.currentPage === 'Live TV') return matchesSearch && matchesCountry;
+
+                return ch.category.toLowerCase().includes(state.currentPage.toLowerCase()) && matchesSearch && matchesCountry;
+            });
+        }
+
+        function changePage(page) {
+            state.currentPage = page;
+            document.getElementById('current-view-title').innerHTML = `<i class="fas fa-tv"></i> ${page}`;
+            setActiveNav(page);
+            renderAll();
+            document.getElementById('main-scroll').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function recordView(url) {
+            state.views[url] = (state.views[url] || 0) + 1;
+            localStorage.setItem('akash_views', JSON.stringify(state.views));
+        }
+
+        function playChannel(encodedUrl) {
+            const url = atob(encodedUrl);
+            const ch = state.channels.find(c => c.url === url);
+            if (!ch) return;
+
+            state.currentIndex = state.channels.findIndex(c => c.url === url);
+            state.recent = [ch, ...state.recent.filter(r => r.url !== url)].slice(0, 12);
+            localStorage.setItem('akash_recent', JSON.stringify(state.recent));
+            recordView(url);
+
+            document.getElementById('player-container').classList.remove('hidden');
+            document.getElementById('mini-player').classList.add('hidden');
+            state.isMinimized = false;
+            document.getElementById('now-playing-title').textContent = ch.name;
+            document.getElementById('now-playing-cat').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-red-500 live-dot"></span> ${ch.category}`;
+            document.getElementById('now-playing-logo').src = ch.logo;
+            document.getElementById('mini-player-logo').src = ch.logo;
+            updateFavButton(url);
+
+            document.getElementById('buffer-msg').classList.add('hidden');
+            state.player.src({ type: ch.url.includes('m3u8') ? 'application/x-mpegURL' : 'video/mp4', src: ch.url });
+            state.player.play().catch(() => {});
+
+            document.getElementById('player-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            renderAll();
+        }
+
+        function nextChannel() {
+            if (state.currentIndex < 0 || !state.channels.length) return;
+            const next = (state.currentIndex + 1) % state.channels.length;
+            playChannel(btoa(state.channels[next].url));
+        }
+
+        function prevChannel() {
+            if (state.currentIndex < 0 || !state.channels.length) return;
+            const prev = (state.currentIndex - 1 + state.channels.length) % state.channels.length;
+            playChannel(btoa(state.channels[prev].url));
+        }
+
+        function closePlayer() {
+            state.player.pause();
+            document.getElementById('player-container').classList.add('hidden');
+            document.getElementById('mini-player').classList.add('hidden');
+            state.isMinimized = false;
+        }
+
+        function minimizePlayer() {
+            state.isMinimized = true;
+            document.getElementById('mini-player').classList.remove('hidden');
+            document.getElementById('main-scroll').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function restorePlayer() {
+            state.isMinimized = false;
+            document.getElementById('mini-player').classList.add('hidden');
+            document.getElementById('player-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function togglePiP() {
+            const videoEl = document.querySelector('#akash-player video') || document.querySelector('video');
+            if (!videoEl) return;
+            if (document.pictureInPictureElement) {
+                document.exitPictureInPicture().catch(() => {});
+            } else if (videoEl.requestPictureInPicture) {
+                videoEl.requestPictureInPicture().catch(() => showToast('Picture-in-Picture not supported', 'error'));
+            } else {
+                showToast('Picture-in-Picture not supported on this device', 'error');
+            }
+        }
+
+        function setupSearchSync() {
+            const desk = document.getElementById('global-search');
+            const mob = document.getElementById('global-search-mobile');
+            let debounceTimer;
+            const handler = (val) => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    state.searchQuery = val;
+                    if (desk) desk.value = val;
+                    if (mob) mob.value = val;
+                    renderAll();
+                }, 200);
+            };
+            if (desk) desk.addEventListener('input', (e) => handler(e.target.value));
+            if (mob) mob.addEventListener('input', (e) => handler(e.target.value));
+        }
+
+        document.getElementById('country-filter').addEventListener('change', (e) => {
+            state.currentCountry = e.target.value;
+            renderAll();
+        });
+
+        function setupClock() {
+            setInterval(() => {
+                const now = new Date();
+                const clockEl = document.getElementById('clock');
+                if (clockEl) clockEl.textContent = now.toLocaleTimeString();
+            }, 1000);
+        }
+
+        function populateCountries() {
+            const countries = ['all', ...new Set(state.channels.map(c => c.country))].sort();
+            document.getElementById('country-filter').innerHTML = countries.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+
+        function initPlayer() {
+            state.player = videojs('akash-player', {
+                controls: true,
+                autoplay: false,
+                preload: 'auto',
+                fluid: true,
+                playbackRates: [0.5, 1, 1.5, 2],
+                userActions: { hotkeys: true }
+            });
+
+            state.player.hlsQualitySelector({ displayCurrentQuality: true });
+
+            state.player.on('waiting', () => document.getElementById('buffer-msg').classList.remove('hidden'));
+            state.player.on('playing', () => document.getElementById('buffer-msg').classList.add('hidden'));
+            state.player.on('error', () => {
+                document.getElementById('buffer-msg').classList.remove('hidden');
+                document.querySelector('#buffer-msg span').textContent = 'Stream unavailable. Try another channel.';
+                showToast('This channel failed to load', 'error');
+            });
+
+            document.getElementById('fav-btn-player').addEventListener('click', () => {
+                const ch = state.channels[state.currentIndex];
+                if (ch) toggleFav(btoa(ch.url));
+            });
+        }
+
+        function updateFavButton(url) {
+            const isFav = state.favorites.some(f => f.url === url);
+            const icon = document.querySelector('#fav-btn-player i');
+            if (icon) icon.className = isFav ? 'fas fa-heart text-red-500' : 'far fa-heart';
+        }
+
+        function updateHero() {
+            const featured = state.channels[Math.floor(Math.random() * 20)] || state.channels[0];
+            if (!featured) return;
+            document.getElementById('hero-img').style.backgroundImage = `url('${featured.logo}')`;
+        }
+
+        function scrollToContent() {
+            document.getElementById('content-rows').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function setupKeyboard() {
+            document.addEventListener('keydown', (e) => {
+                if (!state.player) return;
+                if (e.key === 'f') state.player.isFullscreen() ? state.player.exitFullscreen() : state.player.requestFullscreen();
+                if (e.key === 'm') state.player.muted(!state.player.muted());
+                if (e.key === ' ') { e.preventDefault(); state.player.paused() ? state.player.play() : state.player.pause(); }
+                if (e.key === 'ArrowRight') nextChannel();
+                if (e.key === 'ArrowLeft') prevChannel();
+            });
+        }
+
+        function toggleFav(encodedUrl) {
+            const url = atob(encodedUrl);
+            const ch = state.channels.find(c => c.url === url);
+            const index = state.favorites.findIndex(f => f.url === url);
+
+            if (index > -1) {
+                state.favorites.splice(index, 1);
+                showToast(`Removed from favorites`, 'info');
+            } else {
+                state.favorites.push(ch);
+                showToast(`Added to favorites`, 'success');
+            }
+
+            localStorage.setItem('akash_favs', JSON.stringify(state.favorites));
+            updateFavButton(url);
+            renderAll();
+        }
+
+        function toggleCinema() {
+            document.getElementById('player-container').classList.toggle('max-w-6xl');
+            document.getElementById('player-container').classList.toggle('max-w-full');
+        }
+
+        // ===== Toasts =====
+        function showToast(message, type) {
+            const container = document.getElementById('toast-container');
+            const colors = { success: 'bg-primary text-black', error: 'bg-red-500 text-white', info: 'bg-white/10 text-white' };
+            const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-heart-crack' };
+            const el = document.createElement('div');
+            el.className = `toast px-4 py-2.5 rounded-full text-xs font-semibold shadow-lg flex items-center gap-2 ${colors[type] || colors.info}`;
+            el.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i> ${message}`;
+            container.appendChild(el);
+            setTimeout(() => el.remove(), 2600);
+        }
+
+        // ===== Offline detection =====
+        function setupOfflineDetection() {
+            const banner = document.getElementById('offline-banner');
+            const dot = document.getElementById('net-indicator');
+            function update() {
+                const online = navigator.onLine;
+                banner.classList.toggle('hidden', online);
+                if (dot) dot.classList.toggle('bg-red-500', !online);
+                if (dot) dot.classList.toggle('bg-primary', online);
+                if (online) showToast('Back online', 'success');
+            }
+            window.addEventListener('online', update);
+            window.addEventListener('offline', () => { update(); showToast('You are offline', 'error'); });
+        }
+
+        // ===== Pull to refresh (mobile) =====
+        function setupPullToRefresh() {
+            const container = document.getElementById('main-scroll');
+            const indicator = document.getElementById('pull-refresh');
+            const icon = document.getElementById('pull-icon');
+            const text = document.getElementById('pull-text');
+            let startY = 0, pulling = false, triggered = false;
+
+            container.addEventListener('touchstart', (e) => {
+                if (container.scrollTop <= 0) { startY = e.touches[0].clientY; pulling = true; triggered = false; }
+            }, { passive: true });
+
+            container.addEventListener('touchmove', (e) => {
+                if (!pulling) return;
+                const diff = e.touches[0].clientY - startY;
+                if (diff > 0 && container.scrollTop <= 0) {
+                    const height = Math.min(diff * 0.5, 70);
+                    indicator.classList.remove('hidden');
+                    indicator.style.height = height + 'px';
+                    if (height >= 60 && !triggered) {
+                        triggered = true;
+                        text.textContent = 'Release to refresh';
+                        icon.classList.add('fa-spin');
+                    } else if (height < 60) {
+                        triggered = false;
+                        text.textContent = 'Pull to refresh';
+                        icon.classList.remove('fa-spin');
+                    }
+                }
+            }, { passive: true });
+
+            container.addEventListener('touchend', async () => {
+                if (!pulling) return;
+                pulling = false;
+                if (triggered) {
+                    indicator.style.height = '50px';
+                    text.textContent = 'Refreshing...';
+                    icon.classList.add('fa-spin');
+                    try {
+                        await fetchAndMergeData();
+                        updateHero();
+                        updateTrending();
+                        renderAll();
+                        populateCountries();
+                        showToast('Channels refreshed', 'success');
+                    } catch {
+                        showToast('Refresh failed', 'error');
+                    }
+                }
+                indicator.style.height = '0px';
+                icon.classList.remove('fa-spin');
+                setTimeout(() => indicator.classList.add('hidden'), 200);
+            });
+        }
+
+        // ===== Share =====
+        function setupShare() {
+            document.getElementById('share-app-btn').addEventListener('click', () => {
+                shareGeneric('AKASH MODZ IPTV', 'Watch 100% Ad-Free Live TV — Bangla & India Channels. No Ads. No Tracking.', window.location.href);
+            });
+        }
+
+        function shareChannel() {
+            const ch = state.channels[state.currentIndex];
+            if (!ch) return;
+            shareGeneric(ch.name, `Watch ${ch.name} live on AKASH MODZ IPTV — 100% Ad-Free!`, window.location.href);
+        }
+
+        function shareGeneric(title, text, url) {
+            if (navigator.share) {
+                navigator.share({ title, text, url }).catch(() => {});
+            } else if (navigator.clipboard) {
+                navigator.clipboard.writeText(`${text} ${url}`);
+                showToast('Link copied to clipboard', 'success');
+            } else {
+                showToast('Sharing not supported on this device', 'error');
+            }
+        }
+
+        window.onload = init;
     </script>
 </body>
 </html>
